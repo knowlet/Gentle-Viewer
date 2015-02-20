@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Gental Viewer
+// @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
 // @version      0.1
 // @description  Auto load hentai pic.
@@ -54,7 +54,7 @@
         generateImg: function() {
             for (var i = 0; i < this.imgNum; ++i) {
                 var img = document.createElement("img")
-                img.setAttribute("src", "//st.exhentai.net/img/roller.gif")
+                img.setAttribute("src", "//ehgt.org/g/roller.gif")
                 this.imgList.push(img)
                 gdt.appendChild(img)
             }
