@@ -10,25 +10,60 @@
 // @grant        none
 // ==/UserScript==
 (function() {
-    function d(b) {
-        c.onreadystatechange = function() {
-            if (4 == c.readyState && 200 == c.status)
-                f.appendChild((new DOMParser).parseFromString(c.responseText, "text/html").getElementsByTagName("img")[4]);
-        };
-        for (var a = 0; a < b.length; ++a)
-            c.open("GET", b[a].href, !1), c.send();
-    }
-    var g = document.getElementsByTagName("td"), e = 0, b, c = new XMLHttpRequest, f = document.body.cloneNode(!1);
-    for (b in g)
-        null != g[b].onclick && ++e;
-    d(gdt.getElementsByTagName("a"));
-    document.documentElement.replaceChild(f, document.body);
-    if (e / 2) {
-        var a = new XMLHttpRequest;
-        a.onreadystatechange = function() {
-            4 == a.readyState && 200 == a.status && d((new DOMParser).parseFromString(a.responseText, "text/html").getElementById("gdt").getElementsByTagName("a"));
-        };
-        for (b = 1; b < e / 2; ++b)
-            a.open("GET", base_url + "g/" + gid + "/" + token + "/?p=" + b, !1), a.send();
-    }
+    var Gallery = function(szName, nAge) {
+        this.pageNum = document.querySelectorAll("td[onclick^=sp]").length / 2
+        this.imgNum = parseInt(gdd.querySelectorAll("td.gdt2")[1].innerText.split(" ")[0])
+    };
+
+    Gallery.prototype = {
+        imgList: [],
+        loadPageUrls: function(element) {
+            [].forEach.call(element.querySelectorAll("a[href]"), function(item) {
+                var ajax = new XMLHttpRequest
+                ajax.onreadystatechange = function() {
+                    if (4 == ajax.readyState && 200 == ajax.status) {
+                        var imgNo = parseInt(ajax.responseURL.split("-")[1])
+                        var src = (new DOMParser).parseFromString(ajax.responseText, "text/html").getElementById("img").src
+                        Gallery.prototype.imgList[imgNo-1].src = src
+                        delete this
+                    }
+                }
+                ajax.open("GET", item.href)
+                ajax.send(null)
+            })
+        },
+        getNextPage: function() {
+            var LoadPageUrls = this.loadPageUrls
+            for (var i = 1; i < this.pageNum; ++i) {
+                var ajax = new XMLHttpRequest
+                ajax.onreadystatechange = function() {
+                    if (4 == ajax.readyState && 200 == ajax.status) {
+                        var dom = (new DOMParser).parseFromString(ajax.responseText, "text/html")
+                        LoadPageUrls(dom.getElementById("gdt"))
+                        delete this
+                    }
+                }
+                ajax.open("GET", base_url + "g/" + gid + "/" + token + "/?p=" + i)
+                ajax.send(null)
+            }
+        },
+        claenGDT: function() {
+            while (gdt.firstChild.className)
+                gdt.removeChild(gdt.firstChild)
+        },
+        generateImg: function() {
+            for (var i = 0; i < this.imgNum; ++i) {
+                var img = document.createElement("img")
+                img.setAttribute("src", "//st.exhentai.net/img/roller.gif")
+                this.imgList.push(img)
+                gdt.appendChild(img)
+            }
+        }
+    };
+    var g = new Gallery
+    g.generateImg()
+    g.loadPageUrls(gdt)
+    g.claenGDT()
+    if (g.pageNum)
+        g.getNextPage()
 })();
