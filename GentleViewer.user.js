@@ -22,7 +22,8 @@
                 var ajax = new XMLHttpRequest
                 ajax.onreadystatechange = function() {
                     if (4 == ajax.readyState && 200 == ajax.status) {
-                        var imgNo = parseInt(ajax.responseText.match("startpage=(\\d)").pop())
+                        var imgNo = parseInt(ajax.responseText.match("startpage=(\\d+)").pop())
+                        console.log(imgNo)
                         var src = (new DOMParser).parseFromString(ajax.responseText, "text/html").getElementById("img").src
                         Gallery.prototype.imgList[imgNo-1].src = src
                         delete this
