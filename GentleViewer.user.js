@@ -11,7 +11,7 @@
 // ==/UserScript==
 (function() {
     var Gallery = function(szName, nAge) {
-        this.pageNum = $$("td[onclick^=sp]").length / 2
+        this.pageNum = document.querySelectorAll("td[onclick^=sp]").length / 2
         this.imgNum = parseInt(gdd.querySelector("#gdd tr:nth-child(n+2) td.gdt2").innerText.split(" ")[0])
     };
 
