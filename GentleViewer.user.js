@@ -5,7 +5,7 @@
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
-// @match        http://hentai.org/g/*
+// @match        http://*hentai.org/g/*
 // @include      http://*hentai.org/g/*
 // @grant        none
 // ==/UserScript==
@@ -22,7 +22,7 @@
                 var ajax = new XMLHttpRequest
                 ajax.onreadystatechange = function() {
                     if (4 == ajax.readyState && 200 == ajax.status) {
-                        var imgNo = parseInt(ajax.responseURL.split("-")[1])
+                        var imgNo = parseInt(ajax.responseURL.split("-").pop())
                         var src = (new DOMParser).parseFromString(ajax.responseText, "text/html").getElementById("img").src
                         Gallery.prototype.imgList[imgNo-1].src = src
                         delete this
