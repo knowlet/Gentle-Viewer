@@ -11,8 +11,8 @@
 // ==/UserScript==
 (function() {
     var Gallery = function(szName, nAge) {
-        this.pageNum = document.querySelectorAll("td[onclick^=sp]").length / 2
-        this.imgNum = parseInt(gdd.querySelectorAll("td.gdt2")[1].innerText.split(" ")[0])
+        this.pageNum = $$("td[onclick^=sp]").length / 2
+        this.imgNum = parseInt(gdd.querySelector("#gdd tr:nth-child(n+2) td.gdt2").innerText.split(" ")[0])
     };
 
     Gallery.prototype = {
