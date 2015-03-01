@@ -5,8 +5,8 @@
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
-// @match        http://e*hentai.org/g/*
-// @include      http://e*hentai.org/g/*
+// @match        http://*e*hentai.org/g/*
+// @include      http://*e*hentai.org/g/*
 // @grant        none
 // ==/UserScript==
 (function() {
@@ -43,7 +43,7 @@
                         delete this
                     }
                 }
-                ajax.open("GET", base_url + "g/" + gid + "/" + token + "/?p=" + i)
+                ajax.open("GET", location.href + "?p=" + i)
                 ajax.send(null)
             }
         },
