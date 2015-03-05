@@ -5,8 +5,10 @@
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
-// @match        http://*e*hentai.org/g/*
-// @include      http://*e*hentai.org/g/*
+// @match        http://g.e-hentai.org/g/*
+// @match        http://exhentai.org/g/*
+// @include      http://g.e-hentai.org/g/*
+// @include      http://exhentai.org/g/*
 // @grant        none
 // ==/UserScript==
 (function() {
