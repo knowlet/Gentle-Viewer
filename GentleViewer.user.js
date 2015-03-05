@@ -10,9 +10,9 @@
 // @grant        none
 // ==/UserScript==
 (function() {
-    var Gallery = function(szName, nAge) {
-        this.pageNum = document.querySelectorAll("td[onclick^=sp]").length / 2
-        this.imgNum = parseInt(gdd.querySelector("#gdd tr:nth-child(n+2) td.gdt2").innerText.split(" ")[0])
+    var Gallery = function(pageNum, imgNum) {
+        this.pageNum = pageNum || 0
+        this.imgNum = imgNum || 0
     };
 
     Gallery.prototype = {
@@ -60,7 +60,8 @@
             }
         }
     };
-    var g = new Gallery
+    var g = new Gallery(document.querySelectorAll("td[onclick^=sp]").length / 2,
+                        parseInt(gdd.querySelector("#gdd tr:nth-child(n+2) td.gdt2").textContent.split(" ")[0]))
     g.generateImg()
     g.loadPageUrls(gdt)
     g.claenGDT()
