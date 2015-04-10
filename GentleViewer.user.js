@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.1
+// @version      0.2
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
@@ -10,63 +10,72 @@
 // @include      http://g.e-hentai.org/g/*
 // @include      http://exhentai.org/g/*
 // @grant        none
+// @downloadURL  https://github.com/knowlet/Gentle-Viewer/raw/master/GentleViewer.user.js
 // ==/UserScript==
-(function() {
+(function(lpPage, lpImg) {
     var Gallery = function(pageNum, imgNum) {
-        this.pageNum = pageNum || 0
-        this.imgNum = imgNum || 0
+        this.pageNum = pageNum || 0;
+        this.imgNum = imgNum || 0;
     };
 
     Gallery.prototype = {
-        imgList: [],
+		checkFunctional: function() {
+			return this.imgNum !== 0;
+		},
         loadPageUrls: function(element) {
+			var self = this;
             [].forEach.call(element.querySelectorAll("a[href]"), function(item) {
-                var ajax = new XMLHttpRequest
+                var ajax = new XMLHttpRequest();
                 ajax.onreadystatechange = function() {
                     if (4 == ajax.readyState && 200 == ajax.status) {
-                        var imgNo = parseInt(ajax.responseText.match("startpage=(\\d+)").pop())
-                        var src = (new DOMParser).parseFromString(ajax.responseText, "text/html").getElementById("img").src
-                        Gallery.prototype.imgList[imgNo-1].src = src
-                        delete this
+                        var imgNo = parseInt(ajax.responseText.match("startpage=(\\d+)").pop());
+                        var src = (new DOMParser()).parseFromString(ajax.responseText, "text/html").getElementById("img").src;
+                        self.imgList[imgNo-1].src = src;
                     }
-                }
-                ajax.open("GET", item.href)
-                ajax.send(null)
-            })
+                };
+                ajax.open("GET", item.href);
+                ajax.send(null);
+            });
         },
         getNextPage: function() {
-            var LoadPageUrls = this.loadPageUrls
+            var LoadPageUrls = this.loadPageUrls;
             for (var i = 1; i < this.pageNum; ++i) {
-                var ajax = new XMLHttpRequest
+                var ajax = new XMLHttpRequest();
                 ajax.onreadystatechange = function() {
                     if (4 == ajax.readyState && 200 == ajax.status) {
-                        var dom = (new DOMParser).parseFromString(ajax.responseText, "text/html")
-                        LoadPageUrls(dom.getElementById("gdt"))
-                        delete this
+                        var dom = (new DOMParser()).parseFromString(ajax.responseText, "text/html");
+                        LoadPageUrls(dom.getElementById("gdt"));
                     }
-                }
-                ajax.open("GET", location.href + "?p=" + i)
-                ajax.send(null)
+                };
+                ajax.open("GET", location.href + "?p=" + i);
+                ajax.send(null);
             }
         },
         claenGDT: function() {
-            while (gdt.firstChild.className)
-                gdt.removeChild(gdt.firstChild)
+            while (gdt.firstChild && gdt.firstChild.className);
+                gdt.removeChild(gdt.firstChild);
         },
         generateImg: function() {
+			this.imgList = [];
             for (var i = 0; i < this.imgNum; ++i) {
-                var img = document.createElement("img")
-                img.setAttribute("src", "//ehgt.org/g/roller.gif")
-                this.imgList.push(img)
-                gdt.appendChild(img)
+                var img = document.createElement("img");
+                img.setAttribute("src", "//ehgt.org/g/roller.gif");
+                this.imgList.push(img);
+                gdt.appendChild(img);
             }
         }
     };
-    var g = new Gallery(document.querySelectorAll("td[onclick^=sp]").length / 2,
-                        parseInt(gdd.querySelector("#gdd tr:nth-child(n+2) td.gdt2").textContent.split(" ")[0]))
-    g.generateImg()
-    g.loadPageUrls(gdt)
-    g.claenGDT()
-    if (g.pageNum)
-        g.getNextPage()
-})();
+    var g = new Gallery(lpPage, lpImg);
+	if (g.checkFunctional()) {
+		g.generateImg();
+		g.loadPageUrls(gdt);
+		g.claenGDT();
+		if (g.pageNum)
+			g.getNextPage();
+	}
+	else {
+		alert("There are some issue in the script\nplease open an issue on Github");
+		window.open("https://github.com/knowlet/Gentle-Viewer/issues");
+	}
+    
+})(document.querySelectorAll("td[onclick^=sp]").length / 2, parseInt(gdd.querySelector("#gdd tr:nth-child(n+6) td.gdt2").textContent.split(" ")[0]));
