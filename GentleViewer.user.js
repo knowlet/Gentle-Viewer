@@ -52,7 +52,7 @@
             }
         },
         claenGDT: function() {
-            while (gdt.firstChild && gdt.firstChild.className);
+            while (gdt.firstChild && gdt.firstChild.className)
                 gdt.removeChild(gdt.firstChild);
         },
         generateImg: function() {
