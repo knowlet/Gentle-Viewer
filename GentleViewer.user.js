@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.3
+// @version      0.31
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
@@ -10,7 +10,7 @@
 // @include      http://g.e-hentai.org/g/*
 // @include      http://exhentai.org/g/*
 // @grant        none
-// @downloadURL  https://github.com/knowlet/Gentle-Viewer/raw/master/GentleViewer.user.js
+// @downloadURL  https://github.com/knowlet/Gentle-Viewer/raw/dev/GentleViewer.user.js
 // ==/UserScript==
 (function(lpPage, lpImg) {
     var Gallery = function(pageNum, imgNum) {
@@ -25,30 +25,24 @@
         },
         loadPageUrls: function(element) {
             [].forEach.call(element.querySelectorAll("a[href]"), function(item) {
-                var ajax = new XMLHttpRequest();
-                ajax.onreadystatechange = function() {
-                    if (4 == ajax.readyState && 200 == ajax.status) {
-                        var imgNo = parseInt(ajax.responseText.match("startpage=(\\d+)").pop());
-                        var src = (new DOMParser()).parseFromString(ajax.responseText, "text/html").getElementById("img").src;
-                        Gallery.prototype.imgList[imgNo-1].src = src;
-                    }
-                };
-                ajax.open("GET", item.href);
-                ajax.send(null);
+                fetch(item.href, {credentials: 'include'}).then(function(res){
+                    return res.text();
+                }).then(function(html){
+                    var imgNo = parseInt(html.match("startpage=(\\d+)").pop());
+                    var src = (new DOMParser()).parseFromString(html, "text/html").getElementById("img").src;
+                    Gallery.prototype.imgList[imgNo-1].src = src;
+                });
             });
         },
         getNextPage: function() {
             var LoadPageUrls = this.loadPageUrls;
             for (var i = 1; i < this.pageNum; ++i) {
-                var ajax = new XMLHttpRequest();
-                ajax.onreadystatechange = function() {
-                    if (4 == this.readyState && 200 == this.status) {
-                        var dom = (new DOMParser()).parseFromString(this.responseText, "text/html");
-                        LoadPageUrls(dom.getElementById("gdt"));
-                    }
-                };
-                ajax.open("GET", location.href + "?p=" + i);
-                ajax.send(null);
+                fetch(location.href + "?p=" + i, {credentials: 'include'}).then(function(res){
+                    return res.text();
+                }).then(function(html){
+                    var dom = (new DOMParser()).parseFromString(html, "text/html");
+                    LoadPageUrls(dom.getElementById("gdt"));
+                });
             }
         },
         claenGDT: function() {
