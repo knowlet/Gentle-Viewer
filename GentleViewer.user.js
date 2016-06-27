@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.32
+// @version      0.33
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
@@ -12,16 +12,16 @@
 // ==/UserScript==
 'use strict';
 class Gentle {
-    constructor(pageNum, imgNum) {
-        this.pageNum = pageNum || 0;
-        this.imgNum = imgNum || 0;
+    constructor(pageNum = 0, imgNum = 0) {
+        this.pageNum = pageNum;
+        this.imgNum = imgNum;
         this.imgList = [];
         if (this.checkFunctional()) {
             this.generateImg(() => {
                 this.loadPageUrls(gdt);
                 this.cleanGDT();
                 if (this.pageNum)
-                this.getNextPage();
+                    this.getNextPage();
             });
         }
         else {
@@ -33,7 +33,7 @@ class Gentle {
         return (this.imgNum > 41 && this.pageNum < 2) || this.imgNum !== 0;
     }
     loadPageUrls(e) {
-        [].forEach.call(e.querySelectorAll('a[href]'), item => {
+        for (let item of e.querySelectorAll('a[href]')) {
             fetch(item.href, {credentials: 'include'})
             .then(res => res.text())
             .then(html => {
@@ -41,7 +41,7 @@ class Gentle {
                 let src = (new DOMParser()).parseFromString(html, 'text/html').getElementById("img").src;
                 this.imgList[imgNo-1].src = src;
             });
-        });
+        }
     }
     getNextPage() {
         for (let i = 1; i < this.pageNum; ++i) {
@@ -60,8 +60,8 @@ class Gentle {
     }
     generateImg(callback) {
         for (let i = 0; i < this.imgNum; ++i) {
-            let img = document.createElement("img");
-            img.setAttribute("src", "//ehgt.org/g/roller.gif");
+            let img = new Image();
+            img.src = '//ehgt.org/g/roller.gif';
             this.imgList.push(img);
             gdt.appendChild(img);
         }
