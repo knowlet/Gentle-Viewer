@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.33
+// @version      0.41
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
-// @match        http://g.e-hentai.org/g/*
-// @match        http://exhentai.org/g/*
+// @include      /^http[s]?:\/\/g.e-hentai.org\/g\/.*$/
+// @include      /^http[s]?:\/\/exhentai.org\/g\/.*$/
 // @grant        none
 // @downloadURL  https://github.com/knowlet/Gentle-Viewer/raw/dev/GentleViewer.user.js
 // ==/UserScript==
@@ -61,7 +61,7 @@ class Gentle {
     generateImg(callback) {
         for (let i = 0; i < this.imgNum; ++i) {
             let img = new Image();
-            img.src = '//ehgt.org/g/roller.gif';
+            img.src = 'http://ehgt.org/g/roller.gif';
             this.imgList.push(img);
             gdt.appendChild(img);
         }
