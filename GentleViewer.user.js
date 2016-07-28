@@ -1,14 +1,12 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.3
+// @version      0.4
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
-// @match        http://g.e-hentai.org/g/*
-// @match        http://exhentai.org/g/*
-// @include      http://g.e-hentai.org/g/*
-// @include      http://exhentai.org/g/*
+// @include      /^http[s]?:\/\/g.e-hentai.org\/g\/.*$/
+// @include      /^http[s]?:\/\/exhentai.org\/g\/.*$/
 // @grant        none
 // @downloadURL  https://github.com/knowlet/Gentle-Viewer/raw/master/GentleViewer.user.js
 // ==/UserScript==
@@ -58,7 +56,7 @@
         generateImg: function(callback) {
             for (var i = 0; i < this.imgNum; ++i) {
                 var img = document.createElement("img");
-                img.setAttribute("src", "//ehgt.org/g/roller.gif");
+                img.setAttribute("src", "http://ehgt.org/g/roller.gif");
                 this.imgList.push(img);
                 gdt.appendChild(img);
             }
@@ -78,5 +76,4 @@
         alert("There are some issue in the script\nplease open an issue on Github");
         window.open("https://github.com/knowlet/Gentle-Viewer/issues");
     }
-    
 })(document.querySelectorAll("table.ptt td").length - 2, parseInt(gdd.querySelector("#gdd tr:nth-child(n+6) td.gdt2").textContent.split(" ")[0]));
