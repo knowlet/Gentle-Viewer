@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.4
+// @version      0.5
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
-// @include      /^http[s]?:\/\/g.e-hentai.org\/g\/.*$/
+// @include      /^http[s]?:\/\/e-hentai.org\/g\/.*$/
 // @include      /^http[s]?:\/\/exhentai.org\/g\/.*$/
 // @grant        none
 // @downloadURL  https://github.com/knowlet/Gentle-Viewer/raw/master/GentleViewer.user.js
@@ -37,14 +37,14 @@
         },
         getNextPage: function() {
             var LoadPageUrls = this.loadPageUrls;
+            var ajax = new XMLHttpRequest();
+            ajax.onreadystatechange = function() {
+                if (4 == this.readyState && 200 == this.status) {
+                    var dom = (new DOMParser()).parseFromString(this.responseText, "text/html");
+                    LoadPageUrls(dom.getElementById("gdt"));
+                }
+            };
             for (var i = 1; i < this.pageNum; ++i) {
-                var ajax = new XMLHttpRequest();
-                ajax.onreadystatechange = function() {
-                    if (4 == this.readyState && 200 == this.status) {
-                        var dom = (new DOMParser()).parseFromString(this.responseText, "text/html");
-                        LoadPageUrls(dom.getElementById("gdt"));
-                    }
-                };
                 ajax.open("GET", location.href + "?p=" + i);
                 ajax.send(null);
             }
@@ -60,7 +60,7 @@
                 this.imgList.push(img);
                 gdt.appendChild(img);
             }
-            callback && callback();
+            callback();
         }
     };
     var g = new Gallery(lpPage, lpImg);
