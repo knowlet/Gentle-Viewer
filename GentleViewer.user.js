@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.41
+// @version      0.42
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
-// @include      /^http[s]?:\/\/g.e-hentai.org\/g\/.*$/
+// @include      /^http[s]?:\/\/e-hentai.org\/g\/.*$/
 // @include      /^http[s]?:\/\/exhentai.org\/g\/.*$/
 // @grant        none
 // @downloadURL  https://github.com/knowlet/Gentle-Viewer/raw/dev/GentleViewer.user.js
