@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.44
+// @version      0.45
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
@@ -21,7 +21,7 @@ class Gentle {
                 this.loadPageUrls(window.gdt);
                 this.cleanGDT();
                 if (this.pageNum) {
-                    this.getNextPage();
+                    setTimeout(_ => { this.getNextPage(1); }, 10000);
                 }
             });
         }
@@ -51,21 +51,22 @@ class Gentle {
             let dom = (new DOMParser()).parseFromString(html, 'text/html');
             this.loadPageUrls(dom.getElementById('gdt'));
         });
+        if (p < this.pageNum) {
+            setTimeout(_ => { this.getNextPage(p + 1); }, 2000);
+        }
     }
-    getNextPage() {
-        for (let i = 1; i < this.pageNum; ++i) {
-            const myInterval = setInterval(_ => {
-                if (document.documentElement.scrollTop >= (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 0.8) {
-                    clearTimeout(myTimeout);
-                    clearInterval(myInterval);
-                    this.getPage(i);
-                }
-            }, 1000);
-            const myTimeout = setTimeout(_ => {
+    getNextPage(i) {
+        const myInterval = setInterval(_ => {
+            if (document.documentElement.scrollTop >= (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 0.8) {
+                clearTimeout(myTimeout);
                 clearInterval(myInterval);
                 this.getPage(i);
-            }, 30000);
-        }
+            }
+        }, 1000);
+        const myTimeout = setTimeout(_ => {
+            clearInterval(myInterval);
+            this.getPage(i);
+        }, 30000);
     }
     cleanGDT() {
         while (window.gdt.firstChild && window.gdt.firstChild.className) {
