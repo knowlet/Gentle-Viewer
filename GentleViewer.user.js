@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      0.43
+// @version      0.44
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
@@ -18,10 +18,11 @@ class Gentle {
         this.imgList = [];
         if (this.checkFunctional()) {
             this.generateImg(() => {
-                this.loadPageUrls(gdt);
+                this.loadPageUrls(window.gdt);
                 this.cleanGDT();
-                if (this.pageNum)
+                if (this.pageNum) {
                     this.getNextPage();
+                }
             });
         }
         else {
@@ -35,27 +36,40 @@ class Gentle {
     loadPageUrls(e) {
         for (let item of e.querySelectorAll('a[href]')) {
             fetch(item.href, {credentials: 'include'})
-            .then(res => res.text())
-            .then(html => {
+                .then(res => res.text())
+                .then(html => {
                 let imgNo = Number(html.match("startpage=(\\d+)").pop());
                 let src = (new DOMParser()).parseFromString(html, 'text/html').getElementById("img").src;
                 this.imgList[imgNo-1].src = src;
             });
         }
     }
-    getNextPage() {
-        for (let i = 1; i < this.pageNum; ++i) {
-            fetch(`${location.href}?p=${i}`, {credentials: 'include'})
+    getPage(p) {
+        fetch(`${location.href}?p=${p}`, {credentials: 'include'})
             .then(res => res.text())
             .then(html => {
-                let dom = (new DOMParser()).parseFromString(html, 'text/html');
-                this.loadPageUrls(dom.getElementById('gdt'));
-            });
+            let dom = (new DOMParser()).parseFromString(html, 'text/html');
+            this.loadPageUrls(dom.getElementById('gdt'));
+        });
+    }
+    getNextPage() {
+        for (let i = 1; i < this.pageNum; ++i) {
+            const myInterval = setInterval(_ => {
+                if (document.documentElement.scrollTop >= (document.documentElement.scrollHeight - document.documentElement.clientHeight) * 0.8) {
+                    clearTimeout(myTimeout);
+                    clearInterval(myInterval);
+                    this.getPage(i);
+                }
+            }, 1000);
+            const myTimeout = setTimeout(_ => {
+                clearInterval(myInterval);
+                this.getPage(i);
+            }, 30000);
         }
     }
     cleanGDT() {
-        while (gdt.firstChild && gdt.firstChild.className) {
-            gdt.removeChild(gdt.firstChild);
+        while (window.gdt.firstChild && window.gdt.firstChild.className) {
+            window.gdt.removeChild(window.gdt.firstChild);
         }
     }
     generateImg(callback) {
@@ -63,9 +77,9 @@ class Gentle {
             let img = new Image();
             img.src = 'http://ehgt.org/g/roller.gif';
             this.imgList.push(img);
-            gdt.appendChild(img);
+            window.gdt.appendChild(img);
         }
         callback && callback();
     }
 }
-new Gentle(Number([...document.querySelectorAll("table.ptt td")].slice(-2)[0].textContent), Number(gdd.querySelector("#gdd tr:nth-child(n+6) td.gdt2").textContent.split(" ")[0]));
+new Gentle(Number([...document.querySelectorAll("table.ptt td")].slice(-2)[0].textContent), Number(window.gdd.querySelector("#gdd tr:nth-child(n+6) td.gdt2").textContent.split(" ")[0]));
