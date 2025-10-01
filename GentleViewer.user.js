@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gentle Viewer
 // @namespace    http://knowlet3389.blogspot.tw/
-// @version      1.1
+// @version      1.2
 // @description  Auto load hentai pic.
 // @icon         http://e-hentai.org/favicon.ico
 // @author       KNowlet
@@ -25,6 +25,7 @@ class GentleViewer {
         this.imgList = [];
 
         if (this.isValid()) {
+            this.preCheck();
             this.initialize();
         } else {
             window.alert("Invalid configuration. Please report this issue on Github.");
@@ -34,6 +35,14 @@ class GentleViewer {
 
     isValid() {
         return (this.imgNum > 41 && this.pageNum < 2) || this.imgNum !== 0;
+    }
+
+    preCheck() {
+        if (window.gnd !== undefined) {
+            if (confirm("There are newer versions of this gallery available, goto the newest gallery?")) {
+                location.assign(document.querySelector("#gnd > a:nth-last-child(2)").href);
+            }
+        }
     }
 
     async initialize() {
